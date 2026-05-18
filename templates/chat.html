@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MediBot - AI Doctor Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat-page.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-logo">
+        <div class="nav-logo-icon">🩺</div>
+        Medibot
+    </div>
+    <div class="nav-spacer"></div>
+    <span class="nav-username" id="nav-username">User</span>
+    <button class="logout-btn" onclick="logout()">Signout</button>
+</nav>
+
+<!-- MAIN LAYOUT: sidebar + right panel -->
+<div class="layout">
+
+    <!-- LEFT: Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <h3>Mode</h3>
+            <button class="mode-btn active" id="btn-chat" onclick="setMode('chat')">
+                💬 &nbsp; Medical Chat
+            </button>
+            <button class="mode-btn" id="btn-symp" onclick="setMode('symptoms')">
+                🔍 &nbsp; Symptom Checker
+            </button>
+        </div>
+
+        <div class="history-list">
+            <div class="hist-label">Recent Chats</div>
+            <div id="history-list">
+                <div class="hist-empty">No history yet</div>
+            </div>
+        </div>
+
+        <button class="clear-btn" onclick="clearHistory()">🗑️ Clear History</button>
+    </aside>
+
+    
+    <div class="right-panel">
+
+        
+        <div class="chat-section" id="chat-section">
+
+            <!-- Messages scroll area -->
+            <div class="messages" id="messages">
+
+                <!-- Welcome screen -->
+                <div class="welcome" id="welcome">
+                    <span class="welcome-icon">🏥</span>
+                    <h2>How can I help you?</h2>
+                    <p>Ask me about diseases, symptoms, medicines or any health question.</p>
+                    <div class="suggestion">
+                        <div class="sug-card" onclick="suggest('What are the symptoms of malaria?')">
+                            <span class="sug-icon">🦟</span>
+                            <div class="sug-title">Malaria symptoms</div>
+                            <div class="sug-sub">Causes & treatment</div>
+                        </div>
+                        
+                        <div class="sug-card" onclick="suggest('What is diabetes?')">
+                            <span class="sug-icon">💉</span>
+                            <div class="sug-title">Diabetes</div>
+                            <div class="sug-sub">Types & management</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+           
+
+            
+            <div class="disclaimer">
+                Medibot provides general health information from WHO and AI knowledge.
+            </div>
+
+            
+            <div class="input-bar">
+                <div class="input-wrap">
+                    <textarea id="chat-input" rows="1"
+                        placeholder="Ask a health question..."
+                        onkeydown="handleKey(event)"
+                        oninput="autoResize(this)"></textarea>
+                    <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+                </div>
+                <div class="input-hint">Enter to send · Shift+Enter for new line</div>
+            </div>
+
+        </div>
+       
+
+      
+        <div class="symptom-panel" id="symp-section">
+
+            <div class="panel-header">
+                <div class="panel-title">🔍 Symptom Checker</div>
+                <div class="panel-sub">Add your symptoms and get possible conditions. This is not a diagnosis.</div>
+            </div>
+
+            <div class="symp-card">
+                <label>Your Symptoms</label>
+                <div class="tags-area" id="tags-area"></div>
+                <div class="add-row">
+                    <input type="text" id="symp-input"
+                        placeholder="e.g. fever, headache, nausea..."
+                        onkeydown="sympKey(event)"/>
+                    <button class="btn-add" onclick="addTag()">Add</button>
+                    <button class="btn-analyze" id="analyze-btn" onclick="analyzeSymptoms()">Analyze</button>
+                </div>
+            </div>
+
+            <div class="symp-result" id="symp-result"></div>
+
+        </div>
+        
+
+    </div>
+    
+
+</div>
+
+
+<script src="{{ url_for('static', filename='chat-page.js') }}"></script>
+</body>
+</html>
