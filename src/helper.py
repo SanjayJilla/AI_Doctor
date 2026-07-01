@@ -55,7 +55,7 @@ def get_embeddings():
     except Exception as e:
         import traceback
         print("DEBUG: Failed to import sentence_transformers. Traceback:")
-        traceback.print_exc()
+        print(traceback.format_exc())
     return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 
