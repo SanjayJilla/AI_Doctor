@@ -1,8 +1,5 @@
 
-# ── PROMPT 1: SYSTEM PROMPT ─────────────────────────────────────
-# This is like the AI's "personality card".
-# It is sent to the AI in EVERY single request, no matter what.
-# It tells the AI who it is and what rules to follow always.
+
 
 SYSTEM_PROMPT = """
 You are MediBot, an AI medical assistant.

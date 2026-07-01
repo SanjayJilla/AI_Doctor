@@ -4,15 +4,11 @@ from atexit import _clear
 import os
 from dotenv import load_dotenv
 from src.helper import run_full_ingestion
- 
-#python ingest.py --first time
-#python ingest.py --force wipe and re-ingest all data
-#python ingest.py --pdf book.pdf --book "Book Name" ingest data from a specific PDF with a custom book name for metadata
+
 FLAG_FILE="data/ingestion_done.flag"
 os.makedirs("data", exist_ok=True)
 load_dotenv()
-FLAG_FILE="data/ingestion_done.flag"
-os.makedirs("data", exist_ok=True)
+
 
 def main():
     parser=argparse.ArgumentParser(description="Medical Chatbot — Data Ingestion")

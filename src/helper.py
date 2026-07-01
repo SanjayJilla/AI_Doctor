@@ -349,7 +349,7 @@ def who_data_to_chunks(who_data):
                     }
                 })
 
-    print(f"📦 WHO data → {len(all_chunks)} chunks total")
+    print(f" WHO data → {len(all_chunks)} chunks total")
     return all_chunks
 
 
@@ -374,7 +374,7 @@ def pdf_data_to_chunks(pdf_data):
                 }
             })
 
-    print(f"📦 PDF data → {len(all_chunks)} chunks total")
+    print(f" PDF data → {len(all_chunks)} chunks total")
     return all_chunks
 
 
@@ -414,7 +414,7 @@ def run_full_ingestion(pdf_path=None, book_name=None):
     all_chunks = []
 
     # Step 2
-    print("\n🌐 Step 2: Scraping WHO diseases...")
+    print("\n Step 2: Scraping WHO diseases...")
     who_data = scrape_all_who_diseases()
     all_chunks += who_data_to_chunks(who_data)
 
