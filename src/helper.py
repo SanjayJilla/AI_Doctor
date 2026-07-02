@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
 from langchain.schema import SystemMessage, HumanMessage
@@ -49,13 +49,6 @@ os.makedirs("data", exist_ok=True)
 
 
 def get_embeddings():
-    try:
-        import sentence_transformers
-        print("DEBUG: sentence_transformers imported successfully!")
-    except Exception as e:
-        import traceback
-        print("DEBUG: Failed to import sentence_transformers. Traceback:")
-        print(traceback.format_exc())
     return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 

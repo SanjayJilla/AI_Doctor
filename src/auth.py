@@ -40,7 +40,7 @@ def register():
     new_user.password = hashed_password
     db.session.add(new_user)
     db.session.commit()
-    token = create_access_token(identity=new_user.id)
+    token = create_access_token(identity=str(new_user.id))
     return jsonify({"message": "Account created successfully", "token": token, "user": new_user.to_dict()}), 201
 
 #post /api/auth/login
