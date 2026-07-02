@@ -4,15 +4,14 @@ const TOKEN    = localStorage.getItem("token");
 const USERNAME = localStorage.getItem("username") || "User";
 
 
-if (!TOKEN) {
+if (!TOKEN || TOKEN === "null" || TOKEN === "undefined") {
     window.location.href = "/";
+} else {
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("nav-username").textContent = USERNAME;
+        loadHistory();
+    });
 }
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("nav-username").textContent = USERNAME;
-    loadHistory();
-});
 
 
 function authHeader() {
@@ -97,6 +96,11 @@ async function sendMessage() {
             headers: authHeader(),
             body:    JSON.stringify({ question })
         });
+
+        if (response.status === 401 || response.status === 422) {
+            logout();
+            return;
+        }
 
         const data = await response.json();
         removeTyping(typId);
@@ -217,6 +221,9 @@ function renderTags() {
 }
 
 async function analyzeSymptoms() {
+    // Auto-add any text left in the input field
+    addTag();
+
     if (symptoms.length === 0) {
         alert("Please add at least one symptom.");
         return;
@@ -234,6 +241,11 @@ async function analyzeSymptoms() {
             headers: authHeader(),
             body:    JSON.stringify({ symptoms: symptoms.join(", ") })
         });
+
+        if (response.status === 401 || response.status === 422) {
+            logout();
+            return;
+        }
 
         const data = await response.json();
 
@@ -259,6 +271,10 @@ async function analyzeSymptoms() {
 async function loadHistory() {
     try {
         const response = await fetch("/api/history", { headers: authHeader() });
+        if (response.status === 401 || response.status === 422) {
+            logout();
+            return;
+        }
         const data     = await response.json();
         const list     = document.getElementById("history-list");
 
@@ -284,7 +300,11 @@ async function loadHistory() {
 async function clearHistory() {
     if (!confirm("Clear all your chat history?")) return;
     try {
-        await fetch("/api/history/clear", { method: "DELETE", headers: authHeader() });
+        const response = await fetch("/api/history/clear", { method: "DELETE", headers: authHeader() });
+        if (response.status === 401 || response.status === 422) {
+            logout();
+            return;
+        }
         document.getElementById("history-list").innerHTML = '<div class="hist-empty">No history yet</div>';
     } catch (e) {}
 }

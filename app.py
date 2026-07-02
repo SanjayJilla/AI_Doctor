@@ -4,6 +4,7 @@
 # ─────────────────────────────────────────────────────────────
 
 import os
+import traceback
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -82,6 +83,7 @@ def ask():
         )
         return jsonify(result)
     except Exception as e:
+        traceback.print_exc()
         print(f"/api/ask error: {e}")
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
@@ -110,6 +112,7 @@ def symptoms():
         )
         return jsonify(result)
     except Exception as e:
+        traceback.print_exc()
         print(f"/api/symptoms error: {e}")
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
@@ -149,4 +152,4 @@ if __name__ == "__main__":
     port  = int(os.getenv("PORT", os.getenv("FLASK_PORT", 5000)))
     debug = os.getenv("FLASK_DEBUG", "true").lower() == "true"
     print(f"MediBot running at http://localhost:{port}")
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=debug, use_reloader=False)
