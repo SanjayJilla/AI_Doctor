@@ -434,7 +434,9 @@ def run_full_ingestion(pdf_path=None, book_name=None):
 
 
 def search_pinecone(query, vectorstore):
-    
+    # If vectorstore isn't loaded, skip silently
+    if vectorstore is None:
+        return None, None
     try:
         # similarity_search_with_score returns list of (document, score)
         results = vectorstore.similarity_search_with_score(query, k=4)
@@ -548,24 +550,25 @@ def ask_llm_fallback(question,history=""):
     return response.content
 
 
-def ask_medical_question(query, vectorstore,chat_history=""):
+def ask_medical_question(query, vectorstore, chat_history=""):
     
     print(f"\nUser asked: {query}")
 
-    
-    context, metadata = search_pinecone(query, vectorstore)
-    if context:
-        print(" Found in Pinecone database (Layer 1)")
-        answer = format_answer(query, context, metadata)
-        metadata = metadata or {}
-        return {
-            "answer": answer,
-            "source": metadata.get("source", "Medical Database"),
-            "disease": metadata.get("disease", ""),
-            "section": metadata.get("section", ""),
-            "layer": 1,
-            "layer_label": "Medical Database"
-        }
+    # ── Layer 1: Pinecone (skip if not loaded) ──────────────────
+    if vectorstore is not None:
+        context, metadata = search_pinecone(query, vectorstore)
+        if context:
+            print(" Found in Pinecone database (Layer 1)")
+            answer = format_answer(query, context, metadata)
+            metadata = metadata or {}
+            return {
+                "answer": answer,
+                "source": metadata.get("source", "Medical Database"),
+                "disease": metadata.get("disease", ""),
+                "section": metadata.get("section", ""),
+                "layer": 1,
+                "layer_label": "Medical Database"
+            }
 
     # ── Layer 2: Search WHO website live ───────────────────────
     print("  Not in database → searching WHO live (Layer 2)...")
@@ -596,8 +599,10 @@ def check_symptoms(symptoms_text, vectorstore):
     
     llm = get_llm()
 
-    # Try to find relevant info from Pinecone based on symptoms
-    context, metadata = search_pinecone(symptoms_text, vectorstore)
+    # Try Pinecone only if loaded
+    context = None
+    if vectorstore is not None:
+        context, metadata = search_pinecone(symptoms_text, vectorstore)
 
     # Build the prompt with symptoms + any relevant context found
     prompt = SYMPTOM_CHECKER_PROMPT.format(

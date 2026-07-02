@@ -38,7 +38,7 @@ try:
     print("Vectorstore ready!\n")
 except Exception as e:
     print(f"Vectorstore load failed: {e}")
-    print("   Run ingestion first: python ingest.py\n")
+    print("   Chatbot will use Layer 2 (WHO live) and Layer 3 (AI) only.\n")
     _vectorstore = None
 
 @app.route("/")
@@ -59,12 +59,6 @@ def chat_page():
 @app.route("/api/ask", methods=["POST"])
 @jwt_required()
 def ask():
-    
-    if _vectorstore is None:
-        return jsonify({
-            "error": "Knowledge base not loaded. Run 'python ingest.py' first."
-        }), 503
-
     data = request.get_json()
     if not data or not data.get("question", "").strip():
         return jsonify({"error": "Missing or empty 'question' field"}), 400
@@ -91,10 +85,6 @@ def ask():
 @app.route("/api/symptoms", methods=["POST"])
 @jwt_required()
 def symptoms():
-    
-    if _vectorstore is None:
-        return jsonify({"error": "Knowledge base not loaded."}), 503
-
     data = request.get_json()
     if not data or not data.get("symptoms", "").strip():
         return jsonify({"error": "Missing or empty 'symptoms' field"}), 400

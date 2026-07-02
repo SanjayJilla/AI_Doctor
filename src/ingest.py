@@ -1,6 +1,5 @@
  
 import argparse
-from atexit import _clear
 import os
 from dotenv import load_dotenv
 from src.helper import run_full_ingestion
